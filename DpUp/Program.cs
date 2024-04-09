@@ -1,7 +1,6 @@
-﻿using DbUp;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace AllPhi.Ats.DbUp;
+namespace DbUp;
 
 public class Program
 {

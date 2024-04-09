@@ -17,10 +17,10 @@ public class GiggleDataInitializer
     public void SeedData()
     {
         _context.Database.EnsureDeleted();
-        if (_context.Database.EnsureCreated())
-        {
-            SeedPosts();
-        }
+
+        DbUp.Program.Main(new string[] { });
+
+        SeedPosts();
     }
 
     private void SeedPosts()
@@ -36,13 +36,17 @@ public class GiggleDataInitializer
 
         var faker = new Faker();
 
-        var posts = new PostsFaker()
-            .RuleFor(f => f.Category, faker.Random.ListItem(categories)) // Pick a random category for each post
-            .RuleFor(f => f.Author, faker.Random.ListItem(users)) // Pick a random user's Id as the author for each post
-            .RuleFor(p => p.Id, () => 0)
-            .Generate(100);
+        foreach(var _ in Enumerable.Range(0, 200))
+        {
+            var post = new PostsFaker()
+                .RuleFor(p => p.Id, () => 0)
+                .RuleFor(p => p.Author, () => faker.PickRandom(users))
+                .RuleFor(p => p.Category, () => faker.PickRandom(categories))
+                .Generate();
 
-        _context.Posts.AddRange(posts);
+            _context.Posts.Add(post);
+        }
+
         _context.SaveChanges();
     }
 }
