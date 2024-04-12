@@ -1,11 +1,12 @@
-﻿using Application.Features.Shared;
+﻿using Application.Common;
+using Application.Features.Shared;
 using Infrastructure.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Posts.FindPostById
 {
-    public class FindPostByIdQueryHandler : IRequestHandler<FindPostByIdQuery, PostDto.Detail>
+    public class FindPostByIdQueryHandler : IRequestHandler<FindPostByIdQuery, Result<PostDto.Detail>>
     {
         private readonly GiggleDbContext _context;
 
@@ -14,14 +15,14 @@ namespace Application.Features.Posts.FindPostById
             _context = context;
         }
 
-        public async Task<PostDto.Detail> Handle(FindPostByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PostDto.Detail>> Handle(FindPostByIdQuery request, CancellationToken cancellationToken)
         {
             var post = await _context.Posts.Where(post => post.Id == request.Id)
                 .Include(post => post.Author)
                 .Include(post => post.Category)
                 .FirstOrDefaultAsync(cancellationToken) ?? throw new Exception();
 
-            return new PostDto.Detail
+            var postDetail = new PostDto.Detail
             {
                 Id = request.Id,
                 Title = post.Title,
@@ -37,6 +38,8 @@ namespace Application.Features.Posts.FindPostById
                     Name = post.Category.Name
                 }
             };
+
+            return Result<PostDto.Detail>.Success(postDetail);
         }
     }
 

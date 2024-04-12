@@ -1,4 +1,5 @@
-﻿using Application.Features.Posts.FindPostById;
+﻿using Application.Features.Posts.CreatePost;
+using Application.Features.Posts.FindPostById;
 using Application.Features.Posts.GetAllPosts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -27,5 +28,12 @@ public class PostsController: ControllerBase
     {
         var result = await _mediator.Send(new FindPostByIdQuery { Id = id });
         return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreatePost([FromForm] CreatePostCommand request)
+    {
+        var result = await _mediator.Send(request);
+        return CreatedAtAction(nameof(GetPostById), new { id = result.Data }, result);
     }
 }

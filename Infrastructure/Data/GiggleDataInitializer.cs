@@ -36,7 +36,7 @@ public class GiggleDataInitializer
 
         var faker = new Faker();
 
-        foreach(var _ in Enumerable.Range(0, 200))
+        foreach(var _ in Enumerable.Range(0, 20))
         {
             var post = new PostsFaker()
                 .RuleFor(p => p.Id, () => 0)

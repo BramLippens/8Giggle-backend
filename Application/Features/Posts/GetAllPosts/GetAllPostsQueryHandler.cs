@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Posts.GetAllPosts;
 
-public class GetAllPostsQueryHandler : IRequestHandler<GetAllPostsQuery, ApiResponse>
+public class GetAllPostsQueryHandler : IRequestHandler<GetAllPostsQuery, Result<PaginatedList<PostDto.Index>>>
 {
     private readonly GiggleDbContext _context;
 
@@ -15,7 +15,7 @@ public class GetAllPostsQueryHandler : IRequestHandler<GetAllPostsQuery, ApiResp
         _context = context;
     }
 
-    public async Task<ApiResponse> Handle(GetAllPostsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<PostDto.Index>>> Handle(GetAllPostsQuery request, CancellationToken cancellationToken)
     {
         var result = await _context.Posts
             .OrderBy(p => p.CreatedAt)
@@ -32,6 +32,6 @@ public class GetAllPostsQueryHandler : IRequestHandler<GetAllPostsQuery, ApiResp
         var count = await _context.Posts.CountAsync(cancellationToken);
         var totalPages = (int)Math.Ceiling(count / (double)request.PageSize);
 
-        return new ApiResponse(true, "", new PaginatedList<PostDto.Index>(result, request.PageIndex, totalPages));
+        return Result<PaginatedList<PostDto.Index>>.Success(new PaginatedList<PostDto.Index>(result, request.PageIndex, totalPages));
     }
 }

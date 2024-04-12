@@ -1,4 +1,6 @@
 using Application;
+using Application.Services.Storage;
+using Configuration;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -16,6 +18,8 @@ builder.Services.AddDbContext<GiggleDbContext>(options => options.UseSqlServer(b
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationMediatREntrypoint).Assembly));
 
+//builder.Services.Configure<LocalStorageOptions>(builder.Configuration.GetSection("LocalStorage"));
+builder.Services.AddScoped<IStorageService, LocalStorageService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -52,5 +56,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles();
 
 app.Run();
