@@ -28,5 +28,8 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
         }).Navigation(c=>c.Address).IsRequired();
 
         builder.HasMany(u => u.Posts).WithOne(p => p.Author).HasForeignKey(p => p.AuthorId);
+
+        builder.HasMany(u => u.Likes).WithMany(p => p.LikedBy).UsingEntity(j => j.ToTable("user_likes"));
+        builder.HasMany(u => u.Dislikes).WithMany(p => p.DislikedBy).UsingEntity(j => j.ToTable("user_dislikes"));
     }
 }

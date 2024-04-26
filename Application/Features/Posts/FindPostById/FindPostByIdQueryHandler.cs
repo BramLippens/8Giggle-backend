@@ -20,6 +20,7 @@ namespace Application.Features.Posts.FindPostById
             var post = await _context.Posts.Where(post => post.Id == request.Id)
                 .Include(post => post.Author)
                 .Include(post => post.Category)
+                .Include(post => post.Comments)
                 .FirstOrDefaultAsync(cancellationToken) ?? throw new Exception();
 
             var postDetail = new PostDto.Detail
@@ -36,7 +37,12 @@ namespace Application.Features.Posts.FindPostById
                 {
                     Id = post.Category.Id,
                     Name = post.Category.Name
-                }
+                },
+                Comments = post.Comments.Select(comment => new CommentDto.Index
+                {
+                    Id = comment.Id,
+                    Content = comment.Content
+                }).ToList()
             };
 
             return Result<PostDto.Detail>.Success(postDetail);

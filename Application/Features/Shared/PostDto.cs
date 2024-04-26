@@ -16,5 +16,6 @@ public abstract class PostDto
         public string ImagePath { get; set; }
         public UserDto.Index Author { get; set; }
         public CategoryDto.Index Category { get; set; }
+        public List<CommentDto.Index> Comments { get; set; }
     }
 }

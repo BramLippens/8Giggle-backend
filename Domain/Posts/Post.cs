@@ -15,6 +15,9 @@ public class Post: Entity
     [Column("user_id")]
     public int AuthorId { get; set; }
     public User Author { get; set; }
+    public List<Comment> Comments { get; set; } = new List<Comment>();
+    public List<User> LikedBy { get; set; } = new List<User>();
+    public List<User> DislikedBy { get; set; } = new List<User>();
 
     public Post() { }
 

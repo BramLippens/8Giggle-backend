@@ -1,6 +1,9 @@
-﻿using Application.Features.Posts.CreatePost;
+﻿using Application.Features.Posts.CommentOnAPost;
+using Application.Features.Posts.CreatePost;
+using Application.Features.Posts.DislikeAPost;
 using Application.Features.Posts.FindPostById;
 using Application.Features.Posts.GetAllPosts;
+using Application.Features.Posts.LikeAPost;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,5 +38,23 @@ public class PostsController: ControllerBase
     {
         var result = await _mediator.Send(request);
         return CreatedAtAction(nameof(GetPostById), new { id = result.Data }, result);
+    }
+    [HttpPost("{id}/comment")]
+    public async Task<IActionResult> CommentOnPost(int id, [FromBody] string comment)
+    {
+        await _mediator.Send(new CommentOnAPostCommand() { Comment = comment, PostId = id});
+        return Ok();
+    }
+    [HttpPost("{id}/like")]
+    public async Task<IActionResult> LikePost(int id)
+    {
+        await _mediator.Send(new LikeAPostCommand() { PostId = id });
+        return Ok();
+    }
+    [HttpPost("{id}/unlike")]
+    public async Task<IActionResult> DislikePost(int id)
+    {
+        await _mediator.Send(new DislikeAPostCommand() { PostId = id });
+        return Ok();
     }
 }

@@ -16,5 +16,7 @@ public class PostEntityTypeConfiguration : IEntityTypeConfiguration<Post>
         builder.Property(u => u.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(u => u.UpdatedAt).HasColumnName("updated_at").IsRequired();
         builder.Property(u => u.IsEnabled).HasColumnName("is_enabled").IsRequired();
+
+        builder.HasMany(p => p.Comments).WithOne(c => c.Post).HasForeignKey(c => c.PostId).OnDelete(DeleteBehavior.Cascade);
     }
 }

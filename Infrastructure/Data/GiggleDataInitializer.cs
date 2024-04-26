@@ -18,7 +18,8 @@ public class GiggleDataInitializer
     {
         _context.Database.EnsureDeleted();
 
-        DbUp.Program.Main(new string[] { });
+        //DbUp.Program.Main(new string[] { });
+        _context.Database.EnsureCreated();
 
         SeedPosts();
     }
