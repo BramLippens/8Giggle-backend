@@ -46,6 +46,28 @@ public class GiggleDataInitializer
                 .Generate();
 
             _context.Posts.Add(post);
+
+            var selectedUsers = faker.PickRandom(users, 5);
+
+            foreach(var user in selectedUsers)
+            {
+                var vote = new PostVote
+                {
+                    User = user,
+                    Post = post,
+                    IsLiked = faker.Random.Bool()
+                };
+
+                _context.Votes.Add(vote);
+            }
+
+            var comments = new Faker<Comment>()
+                .RuleFor(c => c.Id, () => 0)
+                .RuleFor(c => c.Post, () => post)
+                .RuleFor(c => c.Content, () => faker.Lorem.Sentence())
+                .Generate(5);
+
+            post.Comments = comments;
         }
 
         _context.SaveChanges();

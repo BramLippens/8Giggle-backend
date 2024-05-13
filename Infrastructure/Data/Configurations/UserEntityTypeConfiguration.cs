@@ -1,6 +1,7 @@
 ﻿using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 
 namespace Infrastructure.Data.Configurations;
 
@@ -27,9 +28,7 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
             address.Property(a => a.Country).HasColumnName("country").HasMaxLength(50);
         }).Navigation(c=>c.Address).IsRequired();
 
-        builder.HasMany(u => u.Posts).WithOne(p => p.Author).HasForeignKey(p => p.AuthorId);
-
-        builder.HasMany(u => u.Likes).WithMany(p => p.LikedBy).UsingEntity(j => j.ToTable("user_likes"));
-        builder.HasMany(u => u.Dislikes).WithMany(p => p.DislikedBy).UsingEntity(j => j.ToTable("user_dislikes"));
+        builder.HasMany(u => u.Posts).WithOne(p => p.Author).HasForeignKey(p => p.AuthorId).OnDelete(DeleteBehavior.NoAction);
+        builder.HasMany(u => u.Votes).WithOne(v => v.User).HasForeignKey(v => v.UserId).OnDelete(DeleteBehavior.NoAction);
     }
 }

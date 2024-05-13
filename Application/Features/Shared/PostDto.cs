@@ -7,6 +7,9 @@ public abstract class PostDto
         public int Id { get; set; }
         public string Title { get; set; }
         public string ImagePath { get; set; }
+        public int Likes { get; set; }
+        public int Dislikes { get; set; }
+        public int comments { get; set; }
     }
 
     public class Detail

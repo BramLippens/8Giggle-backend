@@ -25,7 +25,10 @@ public class GetAllPostsQueryHandler : IRequestHandler<GetAllPostsQuery, Result<
             {
                 Id = p.Id,
                 Title = p.Title,
-                ImagePath = p.ImagePath
+                ImagePath = p.ImagePath,
+                Likes = p.Equals(null) ? 0 : p.Votes.Count(v => v.IsLiked),
+                Dislikes = p.Equals(null) ? 0 : p.Votes.Count(v => !v.IsLiked),
+                comments = p.Equals(null) ? 0 : p.Comments.Count
             })
             .ToListAsync(cancellationToken);
 

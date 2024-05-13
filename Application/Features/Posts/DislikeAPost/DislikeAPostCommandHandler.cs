@@ -1,5 +1,7 @@
-﻿using Infrastructure.Data;
+﻿using Domain.Posts;
+using Infrastructure.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Posts.DislikeAPost;
 
@@ -13,10 +15,24 @@ public class DislikeAPostCommandHandler : IRequestHandler<DislikeAPostCommand>
     }
     public async Task Handle(DislikeAPostCommand request, CancellationToken cancellationToken)
     {
-        var post = await _context.Posts.FindAsync(request.PostId) ?? throw new Exception();
-        var user = await _context.Users.FindAsync(1) ?? throw new Exception();
-        post.LikedBy.Remove(user);
-        post.DislikedBy.Add(user);
+        var vote = await _context.Votes
+            .Where(v => v.PostId == request.PostId && v.UserId == 1)
+            .FirstOrDefaultAsync(cancellationToken);
+        if(vote is null)
+        {
+            vote = new PostVote
+            {
+                PostId = request.PostId,
+                UserId = 1,
+                IsLiked = false
+            };
+            await _context.Votes.AddAsync(vote, cancellationToken);
+        }
+        else
+        {
+            vote.IsLiked = false;
+        }
+
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

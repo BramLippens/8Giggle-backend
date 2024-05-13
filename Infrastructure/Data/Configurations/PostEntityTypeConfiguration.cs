@@ -1,4 +1,5 @@
 ﻿using Domain.Posts;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,5 +19,6 @@ public class PostEntityTypeConfiguration : IEntityTypeConfiguration<Post>
         builder.Property(u => u.IsEnabled).HasColumnName("is_enabled").IsRequired();
 
         builder.HasMany(p => p.Comments).WithOne(c => c.Post).HasForeignKey(c => c.PostId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(p => p.Votes).WithOne(v => v.Post).HasForeignKey(v => v.PostId).OnDelete(DeleteBehavior.Cascade);
     }
 }

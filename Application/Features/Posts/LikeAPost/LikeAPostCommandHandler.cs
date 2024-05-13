@@ -2,6 +2,7 @@
 using Domain.Users;
 using Infrastructure.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Posts.LikeAPost.LikeAPost;
 
@@ -16,10 +17,23 @@ public class LikeAPostCommandHandler : IRequestHandler<LikeAPostCommand>
 
     public async Task Handle(LikeAPostCommand request, CancellationToken cancellationToken)
     {
-        Post post = await _context.Posts.FindAsync(request.PostId) ?? throw new Exception();
-        User user = await _context.Users.FindAsync(1) ?? throw new Exception();
-        post.LikedBy.Add(user);
-        post.DislikedBy.Remove(user);
-        await _context.SaveChangesAsync(cancellationToken);
+        var vote = await _context.Votes
+            .Where(v => v.PostId == request.PostId && v.UserId == 1)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (vote is null)
+        {
+            vote = new PostVote
+            {
+                PostId = request.PostId,
+                UserId = 1,
+                IsLiked = true
+            };
+        }
+        else
+        {
+            vote.IsLiked = true;
+        }
+        await _context.SaveChangesAsync();
     }
 }
